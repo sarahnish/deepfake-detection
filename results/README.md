@@ -1,191 +1,90 @@
-# Results 
+# Results
 
-This folder contains the main evaluation figures and supporting outputs from the **Deepfake Detection Robustness** project.
-
-The project evaluates whether degradation-aware routing improves deepfake detection when facial images are affected by different quality conditions.
-
----
+This directory contains the four principal evaluation figures from the final post-tuning experiment. The results compare a clean-only detector, a unified degradation-trained detector, a degradation-routed expert system, and oracle routing.
 
 ## Headline Results
 
-| System | Accuracy |
+| Model | Overall test accuracy |
 |---|---:|
-| Clean-only baseline | **70.58%** |
-| Final degradation router | **95.45%** |
-| Unified detector | **98.11%** |
-| Routed specialist system | **98.42%** |
-| Oracle routing | **98.43%** |
+| Clean-only | 70.58% |
+| Unified | 98.11% |
+| Routed | **98.42%** |
+| Oracle | 98.43% |
 
-The final routed system achieved **98.42% accuracy**, compared with **98.11%** for the unified detector.
+The Stage-1 degradation router achieved **95.45% accuracy** on the 14,000-image test set.
 
-This represents only a **0.31 percentage-point improvement**, indicating that specialist routing provided a small gain over an already strong unified model.
+The strongest finding is that training across degraded images produced most of the robustness improvement:
 
-The oracle result of **98.43%** shows that the implemented router performed almost identically to ideal routing on the evaluated dataset.
+- Clean-only to unified: **+27.53 percentage points**
+- Unified to routed: **+0.31 percentage points**
+- Routed to oracle: **+0.01 percentage points**
 
----
+## 1. End-to-End Detection Accuracy
 
-## System Comparison
+![End-to-end detection accuracy](end-to-end-accuracy.png)
 
-The evaluation compares four main configurations:
+This figure compares all four systems overall and across the seven evaluation conditions:
 
-### Clean-Only Baseline
+- Clean
+- Salt-and-pepper noise
+- Gaussian noise
+- Gaussian blur
+- Motion blur
+- Low resolution
+- JPEG compression
 
-The clean-only model achieved **70.58% accuracy** when evaluated across degraded conditions.
+The clean-only detector performs strongly on clean images but degrades substantially under several corruptions. The unified, routed, and oracle systems remain close to 98% accuracy across most conditions.
 
-This illustrates the robustness problem: a detector trained only on clean data can lose substantial performance when image quality changes.
+## 2. Degradation-Router Performance
 
-### Unified Detector
+![Degradation-router training curve and confusion matrix](router-performance.png)
 
-The unified model was trained to handle the full range of evaluated degradation conditions within a single detector.
+The router reached **95.45% degradation-type test accuracy**. Salt-and-pepper noise, Gaussian noise, and motion blur were identified almost perfectly.
 
-It achieved:
+The main remaining confusion occurred between Gaussian blur and low resolution. Both conditions suppress fine spatial detail, which can make their feature representations similar.
 
-**98.11% accuracy**
+## 3. Routing-Gap Analysis
 
-This provides a strong baseline for assessing whether degradation-specific specialist models offer additional value.
+![Routing-gap analysis](routing-gap-analysis.png)
 
-### Routed Specialist System
+Oracle routing uses the true degradation condition to select an expert. Predicted routing uses the Stage-1 router's output.
 
-The routed architecture first predicts the degradation condition and then sends the image to the corresponding specialist detector.
+Overall accuracy was:
 
-It achieved:
+- Routed: **98.42%**
+- Oracle: **98.43%**
+- Difference: **0.01 percentage points**
 
-**98.42% accuracy**
+This very small gap indicates that the remaining routing errors had little practical effect on the final real-versus-AI-generated prediction.
 
-The routed system therefore improved on the unified model by:
+The routed model exceeded the unified detector most clearly under motion blur, low resolution, and Gaussian blur. It remained slightly behind the unified model for salt-and-pepper noise.
 
-**+0.31 percentage points**
+## 4. Robustness Across Degradation Severity
 
-### Oracle Routing
+![Accuracy across degradation severity](severity-sweep.png)
 
-Oracle routing uses the true degradation label to select the appropriate specialist detector.
+The severity sweep examines whether model performance remains stable as each corruption becomes stronger.
 
-It achieved:
+The degradation-trained systems remain comparatively stable across most tested severity levels. The clean-only model varies much more sharply, particularly under noise, blur, and resolution loss.
 
-**98.43% accuracy**
+The routed and oracle results closely overlap, supporting the conclusion that routing errors were not the principal performance bottleneck.
 
-The extremely small gap between routed and oracle performance suggests that degradation-routing errors contributed very little to the final system error.
+## Interpretation
 
----
+The experiment does not show a large general advantage from expert routing. Instead, it shows that exposure to degraded images during training was the main source of robustness.
 
-## Degradation Router
+The routed system's **0.31 percentage-point** advantage over the unified detector should therefore be treated as a small observed improvement rather than proof that hard expert routing will consistently outperform a single degradation-trained model.
 
-The final degradation router achieved:
+## Experimental Context
 
-**95.45% classification accuracy**
+- Dataset: 140K Real and Fake Faces
+- Training set: 112,000 images
+- Validation set: 14,000 images
+- Test set: 14,000 images
+- Backbone: pretrained ResNet-18
+- Feature representation: pooled layers 1-4, 960 dimensions
+- Router classes: seven degradation conditions
+- Expert classifiers: seven binary MLP heads
+- Evaluation: accuracy, precision, recall, F1, ROC-AUC, learning curves, and confusion matrices
 
-Its role is not to determine whether an image is real or fake.
-
-Instead, it identifies the image-quality or degradation condition so that the sample can be passed to an appropriate specialist detector.
-
-The system therefore follows the structure:
-
-```text
-Input face image
-        ↓
-Degradation router
-        ↓
-Predicted degradation condition
-        ↓
-Specialist deepfake detector
-        ↓
-Real / Fake prediction
-```
-
----
-
-## Key Finding
-
-The main result is not simply that routing improved accuracy.
-
-The experiment showed that a **single unified detector already handled the evaluated degradation conditions extremely well**.
-
-Although the specialist-routing architecture achieved the best observed result, its advantage over the unified model was only:
-
-**98.42% − 98.11% = 0.31 percentage points**
-
-This means the additional routing complexity produced only a modest empirical benefit in this evaluation.
-
-That distinction is important when considering whether the extra system complexity would be justified in a practical deployment.
-
----
-
-## Robustness Finding
-
-The comparison between the clean-only model and the degradation-aware systems highlights the importance of training for realistic image variation.
-
-```text
-Clean-only model
-70.58%
-        ↓
-Degradation-aware training
-        ↓
-Unified detector
-98.11%
-        ↓
-Specialist routing
-98.42%
-```
-
-The largest improvement therefore came from making the detection system **degradation-aware**, rather than from the routing mechanism itself.
-
----
-
-## Results Interpretation
-
-The experiments support three main conclusions:
-
-1. **Clean-data performance is not sufficient evidence of robustness.**  
-   The clean-only detector performed substantially worse when exposed to degraded inputs.
-
-2. **Training across degradation conditions produced a large robustness improvement.**  
-   The unified detector reached 98.11% accuracy without requiring specialist routing.
-
-3. **Specialist routing produced only a small additional gain.**  
-   The routed system reached 98.42%, only 0.31 percentage points above the unified detector.
-
-The results therefore support degradation-aware training while providing weaker evidence that a more complex specialist-routing architecture is necessary.
-
----
-
-## Figures
-
-The figures in this folder document the main evaluation stages of the project.
-
-They include results covering:
-
-- degradation-router performance
-- clean-only baseline performance
-- unified-model evaluation
-- routed specialist performance
-- oracle-routing comparison
-- degradation-specific model behaviour
-- final system comparison
-
-Refer to the project notebook and case study for the full experimental workflow and interpretation.
-
----
-
-## Limitations
-
-These results should be interpreted within the scope of the experiment.
-
-Key limitations include:
-
-- evaluation is limited to the datasets and degradation conditions used in the project
-- the routing advantage over the unified model is very small
-- results do not establish robustness to unseen real-world manipulations or acquisition conditions
-- high test accuracy does not guarantee generalisation to other deepfake-generation methods
-- the experiment does not establish that the routed architecture is preferable under deployment constraints such as latency, compute or maintenance cost
-
-The comparison therefore demonstrates experimental robustness under the evaluated conditions rather than universal deepfake-detection reliability.
-
----
-
-## Key Takeaway
-
-The strongest result from the project is that **degradation-aware training substantially improved deepfake-detection robustness**.
-
-A unified detector achieved **98.11% accuracy**, while specialist routing increased this to **98.42%**.
-
-Because the improvement from routing was only **0.31 percentage points**, the results suggest that the simpler unified model may provide a better complexity–performance trade-off unless specialist routing offers additional benefits under broader evaluation.
+These figures report the final post-tuning experiment. Earlier baseline figures and development-stage notebooks are intentionally excluded from the public repository.
