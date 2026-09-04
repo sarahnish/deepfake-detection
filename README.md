@@ -8,7 +8,6 @@
 <a href="notebooks/deepfake_detection_final.ipynb">Final Notebook</a> •
   <a href="assets/full-case%20study/">Full Case Study</a> •
   <a href="results/README.md">Results</a> •
-  <a href="https://github.com/sarahnish/portfolio">Portfolio</a>
 </p>
 
 ## At a Glance
