@@ -1,6 +1,6 @@
 # Case Study: Robust AI-Generated Face Detection Under Image Degradation
 
-[← Back to Project Overview](../README.md)
+[← Back to Project Overview](https://github.com/sarahnish/deepfake-detection)
 
 ## Why This Project?
 
@@ -214,20 +214,3 @@ The final result was more nuanced:
 The unified degradation-trained detector already achieved **98.11%**, while routing increased this to **98.42%**.
 
 This made the most useful outcome of the project not simply a high accuracy score, but a clearer understanding of **where the robustness improvement actually came from**.
-
----
-
-## Explore the Project
-
-- [Project Overview](../README.md)
-- [Final Modelling Notebook](../notebooks/degradation-aware-routing.ipynb)
-- [Evaluation Results](../results/README.md)
-- [Project Portfolio](https://github.com/sarahnish/portfolio)
-
----
-
-## Project Context
-
-This was a **collaborative MSc Artificial Intelligence project at Queen Mary University of London**.
-
-The case study describes the team's methodology and reported experimental findings while preserving the collaborative nature of the original work.
