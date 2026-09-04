@@ -2,8 +2,6 @@
 
 This directory contains the four principal evaluation figures from the final post-tuning experiment. The results compare a clean-only detector, a unified degradation-trained detector, a degradation-routed expert system, and oracle routing.
 
-## Headline Results
-
 | Model | Overall test accuracy |
 |---|---:|
 | Clean-only | 70.58% |
