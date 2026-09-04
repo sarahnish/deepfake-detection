@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="notebooks/degradation-aware-routing.ipynb">Final Notebook</a> •
-  <a href="docs/case-study.md">Full Case Study</a> •
+  <a href="assets/full-case%20study/">Full Case Study</a> •
   <a href="results/README.md">Results</a> •
   <a href="https://github.com/sarahnish/portfolio">Portfolio</a>
 </p>
