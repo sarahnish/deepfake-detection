@@ -254,7 +254,3 @@ deepfake-detection-robustness/
     ├── routing-gap-analysis.png
     └── severity-sweep.png
 ```
-
-## Portfolio
-
-[View my full project portfolio →](https://github.com/sarahnish/portfolio)
