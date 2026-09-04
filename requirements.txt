@@ -1,20 +1,9 @@
-# Deep learning
+kagglehub
+matplotlib
+numpy
+opencv-python
+pandas
+Pillow
+scikit-learn
 torch
 torchvision
-
-# Data and numerical computing
-numpy
-pandas
-
-# Image processing
-Pillow
-opencv-python
-
-# Machine learning and evaluation
-scikit-learn
-
-# Visualisation
-matplotlib
-
-# Dataset access
-kagglehub
