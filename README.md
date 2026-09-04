@@ -254,13 +254,6 @@ deepfake-detection-robustness/
     ├── routing-gap-analysis.png
     └── severity-sweep.png
 ```
----
-
-## Explore Further
-
-- [Final Modelling Notebook](notebooks/degradation-aware-routing.ipynb)
-- [Evaluation Results](results/README.md)
-- [Project Portfolio](https://github.com/sarahnish/portfolio)
 
 ## Portfolio
 
